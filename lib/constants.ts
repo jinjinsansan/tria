@@ -37,6 +37,12 @@ export const CONTRIBUTION_POINTS = {
   sns_share: 20,
 } as const;
 
+export const FEED_SORT_OPTIONS = [
+  { value: 'newest', label: '新着' },
+  { value: 'popular', label: '人気' },
+  { value: 'unanswered', label: '未回答' },
+] as const;
+
 export const NOTIFICATION_TYPES = {
   comment: 'comment',
   best_answer: 'best_answer',

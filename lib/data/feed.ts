@@ -100,3 +100,31 @@ export const getCommentsByPostId = cache(async (postId: string) => {
 
   return (data as unknown as CommentWithUser[]) ?? [];
 });
+
+export async function getUserLikedTargets(userId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('likes')
+    .select('target_type, target_id')
+    .eq('user_id', userId);
+
+  if (error || !data) {
+    return {
+      posts: new Set<string>(),
+      comments: new Set<string>(),
+    };
+  }
+
+  const posts = new Set<string>();
+  const comments = new Set<string>();
+
+  for (const like of data) {
+    if (like.target_type === 'post') {
+      posts.add(like.target_id as string);
+    } else if (like.target_type === 'comment') {
+      comments.add(like.target_id as string);
+    }
+  }
+
+  return { posts, comments };
+}

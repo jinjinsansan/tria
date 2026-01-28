@@ -1,6 +1,7 @@
+import { Heart } from 'lucide-react';
 import Link from 'next/link';
 
-import { createPostAction } from '@/app/actions/feed';
+import { createPostAction, toggleLikeAction } from '@/app/actions/feed';
 import { initialFeedState } from '@/app/actions/feed-state';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FEED_SORT_OPTIONS, TAGS } from '@/lib/constants';
-import { getPosts } from '@/lib/data/feed';
+import { getPosts, getUserLikedTargets } from '@/lib/data/feed';
+import { createClient } from '@/lib/supabase/server';
 import { cn, formatDate } from '@/lib/utils';
 import type { Tag } from '@/lib/constants';
 
@@ -28,6 +30,16 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   const activeTag = typeof searchParams?.tag === 'string' ? searchParams.tag : undefined;
 
   const posts = await getPosts({ sort: activeSort as 'newest' | 'popular' | 'unanswered', tag: activeTag });
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const likedTargets = (user
+    ? await getUserLikedTargets(user.id)
+    : { posts: new Set<string>(), comments: new Set<string>() }) as {
+    posts: Set<string>;
+    comments: Set<string>;
+  };
   const handleCreatePost = async (formData: FormData) => {
     'use server';
     await createPostAction(initialFeedState, formData);
@@ -116,9 +128,31 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
                   </CardHeader>
                   <CardContent className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                     <div className="flex gap-2">
-                      <span>👍 {post.likes_count}</span>
                       <span>💬 {post.comments_count}</span>
                     </div>
+                    <form
+                      action={toggleLikeAction}
+                      className="inline-flex items-center gap-1 text-sm"
+                    >
+                      <input type="hidden" name="target_type" value="post" />
+                      <input type="hidden" name="target_id" value={post.id} />
+                      <input type="hidden" name="redirect_path" value="/feed" />
+                      <button
+                        type="submit"
+                        disabled={!user}
+                        className={cn(
+                          'inline-flex items-center gap-1 rounded-full border border-white/10 px-3 py-1 text-xs transition',
+                          likedTargets.posts.has(post.id) ? 'text-primary' : 'text-muted-foreground',
+                          !user ? 'cursor-not-allowed opacity-60' : undefined
+                        )}
+                      >
+                        <Heart
+                          className="h-4 w-4"
+                          fill={likedTargets.posts.has(post.id) ? 'currentColor' : 'none'}
+                        />
+                        <span>{post.likes_count}</span>
+                      </button>
+                    </form>
                     <div className="flex flex-wrap gap-2">
                       {post.tags?.map((tag) => (
                         <span key={tag} className="rounded-full bg-white/5 px-3 py-1 text-[12px] text-white">

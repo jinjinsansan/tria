@@ -1,19 +1,10 @@
 'use server';
 
+import type { AuthFormState, FieldErrorKey } from './auth-state';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createAdminClient, createClient } from '@/lib/supabase/server';
-
-type FieldErrorKey = 'email' | 'password' | 'display_name' | 'referral_code';
-
-export type AuthFormState = {
-  ok: boolean;
-  message?: string;
-  fieldErrors?: Partial<Record<FieldErrorKey, string>>;
-};
-
-export const initialAuthState: AuthFormState = { ok: true };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

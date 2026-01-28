@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useFormState, useFormStatus } from 'react-dom';
 
-import { signInAction, initialAuthState } from '@/app/actions/auth';
+import { signInAction } from '@/app/actions/auth';
+import { initialAuthState } from '@/app/actions/auth-state';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

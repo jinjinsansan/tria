@@ -1,80 +1,69 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
+import { ArticleCreateForm } from '@/components/admin/article-create-form';
+import { ArticleEditForm } from '@/components/admin/article-edit-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getAllArticles } from '@/lib/data/articles';
+import { createClient } from '@/lib/supabase/server';
 
 export const metadata = {
   title: '記事管理 | 管理者パネル',
 };
 
-const placeholderArticles = [
-  { title: 'triaとは', status: '公開済み', updated: '2026/01/15' },
-  { title: 'ウォレットの使い方', status: '下書き', updated: '2026/01/12' },
-];
+export default async function AdminArticlesPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export default function AdminArticlesPage() {
+  if (!user) {
+    redirect('/login');
+  }
+
+  const { data: profile } = await supabase.from('users').select('is_admin').eq('id', user.id).maybeSingle();
+
+  if (!profile?.is_admin) {
+    redirect('/');
+  }
+
+  const articles = await getAllArticles();
+
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
-        <p className="text-sm uppercase tracking-[0.4em] text-primary">Admin</p>
-        <h1 className="text-3xl font-semibold text-white">記事管理</h1>
-        <p className="text-sm text-muted-foreground">
-          Supabaseと接続されたCMS機能を今後ここから提供します。現在はUIプレビュー段階です。
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <button type="button" className={buttonVariants({ variant: 'gradient', size: 'sm' })} disabled>
-            新規記事（準備中）
-          </button>
-          <Link href="/learn" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-            公開中一覧を見る
-          </Link>
+      <header className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.4em] text-primary">Admin</p>
+          <h1 className="text-3xl font-semibold text-white">記事管理</h1>
+          <p className="text-sm text-muted-foreground">記事の作成・編集・公開をここから行えます。</p>
         </div>
+        <Link href="/learn" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+          公開一覧を確認
+        </Link>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>リリース計画</CardTitle>
-            <CardDescription>今後追加予定の機能</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>・ 記事の作成 / 編集 / 削除</li>
-              <li>・ カテゴリ / 公開状態の管理</li>
-              <li>・ AI草稿生成との連携</li>
-              <li>・ 編集履歴と下書きプレビュー</li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>直近の更新（ダミー）</CardTitle>
-            <CardDescription>本番データ接続前のレイアウト確認用</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm text-muted-foreground">
-            {placeholderArticles.map((article) => (
-              <div key={article.title} className="rounded-xl border border-white/5 bg-white/5 p-3">
-                <p className="text-white">{article.title}</p>
-                <p className="text-xs">状態：{article.status} / 更新日：{article.updated}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </section>
-
-      <Card>
+      <Card className="border-white/10 bg-card/80">
         <CardHeader>
-          <CardTitle>開発メモ</CardTitle>
-          <CardDescription>Phase 2 で実装予定のタスク</CardDescription>
+          <CardTitle>新規記事を作成</CardTitle>
+          <CardDescription>下書きは公開フラグを外した状態で保存してください。</CardDescription>
         </CardHeader>
         <CardContent>
-          <ol className="list-decimal space-y-2 pl-6 text-sm text-muted-foreground">
-            <li>Supabase RLSに準拠した記事CRUD API</li>
-            <li>管理者専用のドラフトプレビュー</li>
-            <li>記事の並び順・特集設定のUI</li>
-            <li>フィードバック収集のワークフロー</li>
-          </ol>
+          <ArticleCreateForm />
+        </CardContent>
+      </Card>
+
+      <Card className="border-white/10 bg-card/80">
+        <CardHeader>
+          <CardTitle>既存の記事</CardTitle>
+          <CardDescription>クリックして内容を編集できます。</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {articles.length ? (
+            articles.map((article) => <ArticleEditForm key={article.id} article={article} />)
+          ) : (
+            <p className="text-sm text-muted-foreground">まだ記事がありません。</p>
+          )}
         </CardContent>
       </Card>
     </div>

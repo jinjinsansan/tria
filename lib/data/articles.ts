@@ -66,3 +66,18 @@ export const getArticleBySlug = cache(async (slug: string): Promise<Article | nu
 
   return data ?? null;
 });
+
+export const getAllArticles = cache(async (): Promise<Article[]> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('articles')
+    .select(ARTICLE_FIELDS)
+    .order('updated_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to fetch articles for admin', error);
+    return [];
+  }
+
+  return data ?? [];
+});

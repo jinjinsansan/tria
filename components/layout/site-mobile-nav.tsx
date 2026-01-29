@@ -62,6 +62,11 @@ export function MobileNav({ navItems, user, onSignOut }: MobileNavProps) {
                     貢献度 {user.contributionPoints ?? 0}pt / ダウンライン{' '}
                     {user.totalDownlines ?? 0}
                   </p>
+                  {typeof user.unreadNotifications === 'number' ? (
+                    <p className="text-xs text-primary">
+                      未読通知 {user.unreadNotifications}
+                    </p>
+                  ) : null}
                 </div>
                 <form action={onSignOut}>
                   <button

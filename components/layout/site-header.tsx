@@ -1,3 +1,4 @@
+import { Bell } from 'lucide-react';
 import Link from 'next/link';
 
 import { signOutAction } from '@/app/actions/auth';
@@ -14,6 +15,7 @@ export interface HeaderUser {
   displayName?: string | null;
   contributionPoints?: number | null;
   totalDownlines?: number | null;
+  unreadNotifications?: number | null;
 }
 
 const navItems = [
@@ -21,6 +23,7 @@ const navItems = [
   { label: '学ぶ', href: '/learn' },
   { label: 'フィード', href: '/feed' },
   { label: 'AI補助', href: '/ai' },
+  { label: '通知', href: '/notifications' },
   { label: '設定', href: '/settings' },
 ];
 
@@ -49,9 +52,21 @@ export function SiteHeader({ user }: SiteHeaderProps) {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-4 md:flex">
           {user ? (
             <>
+              <Link
+                href="/notifications"
+                aria-label="通知"
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white transition hover:border-white/30"
+              >
+                <Bell className="h-5 w-5" />
+                {user.unreadNotifications ? (
+                  <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary px-1 text-[11px] font-semibold text-white">
+                    {user.unreadNotifications > 9 ? '9+' : user.unreadNotifications}
+                  </span>
+                ) : null}
+              </Link>
               <div className="text-right text-xs text-muted-foreground">
                 <p className="text-sm font-medium text-white">
                   {user.displayName ?? user.email}

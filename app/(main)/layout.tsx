@@ -13,11 +13,18 @@ export default async function MainLayout({ children }: { children: ReactNode }) 
   let headerUser: HeaderUser | null = null;
 
   if (user) {
-    const { data: profile } = await supabase
-      .from('users')
-      .select('display_name, contribution_points, total_downlines')
-      .eq('id', user.id)
-      .maybeSingle();
+    const [{ data: profile }, unreadRes] = await Promise.all([
+      supabase
+        .from('users')
+        .select('display_name, contribution_points, total_downlines')
+        .eq('id', user.id)
+        .maybeSingle(),
+      supabase
+        .from('notifications')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('is_read', false),
+    ]);
 
     headerUser = {
       id: user.id,
@@ -26,6 +33,7 @@ export default async function MainLayout({ children }: { children: ReactNode }) 
         profile?.display_name ?? (user.user_metadata as { display_name?: string })?.display_name ?? null,
       contributionPoints: profile?.contribution_points ?? null,
       totalDownlines: profile?.total_downlines ?? null,
+      unreadNotifications: unreadRes.count ?? 0,
     };
   }
 

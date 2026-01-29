@@ -98,16 +98,18 @@ export function MobileNav({ navItems, user }: MobileNavProps) {
                 </Link>
               </div>
             )}
-            <Button
-              asChild
-              variant="gradient"
-              size="lg"
-              className="w-full rounded-2xl bg-gradient-primary text-black"
-            >
-              <a href="https://app.tria.so" target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
-                アプリをダウンロード
-              </a>
-            </Button>
+            {!user ? (
+              <Button
+                asChild
+                variant="gradient"
+                size="lg"
+                className="w-full rounded-2xl bg-gradient-primary text-black"
+              >
+                <a href="https://app.tria.so" target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
+                  アプリをダウンロード
+                </a>
+              </Button>
+            ) : null}
           </div>
         </div>
       ) : null}

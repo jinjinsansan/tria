@@ -3,27 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #0F0F0F;
-  --foreground: #FFFFFF;
-  --card: #1A1A1A;
-  --card-foreground: #FFFFFF;
-  --primary: #8B5CF6;
-  --primary-foreground: #FFFFFF;
-  --secondary: #06B6D4;
+  --background: #03040A;
+  --foreground: #F5F6FE;
+  --card: #10131A;
+  --card-foreground: #F5F6FE;
+  --primary: #FF9A3C;
+  --primary-foreground: #0C0F17;
+  --secondary: #5F4CFF;
   --secondary-foreground: #FFFFFF;
-  --accent: #10B981;
-  --accent-foreground: #FFFFFF;
-  --muted: #2A2A2A;
-  --muted-foreground: #A1A1A1;
-  --border: #2A2A2A;
-  --input: #2A2A2A;
-  --ring: #8B5CF6;
+  --accent: #00F5FF;
+  --accent-foreground: #00131D;
+  --muted: #1B1E29;
+  --muted-foreground: #9CA3B5;
+  --border: #1F2330;
+  --input: #1C1F2C;
+  --ring: #FF9A3C;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: 'Noto Sans JP', sans-serif;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 154, 60, 0.15), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(95, 76, 255, 0.25), transparent 40%),
+    #03040a;
+  font-family: 'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  letter-spacing: 0.01em;
 }
 
 @layer base {
@@ -34,28 +37,32 @@ body {
 
 @layer utilities {
   .glass {
-    @apply bg-card/80 backdrop-blur-xl border border-white/10;
+    @apply bg-card/80 backdrop-blur-3xl border border-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.45)];
   }
-  
+
   .gradient-text {
     @apply bg-gradient-primary bg-clip-text text-transparent;
   }
-  
+
   .gradient-border {
     position: relative;
   }
-  
+
   .gradient-border::before {
     content: '';
     position: absolute;
     inset: 0;
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #10B981 100%);
+    background: linear-gradient(120deg, rgba(255, 154, 60, 0.6), rgba(255, 75, 113, 0.6), rgba(95, 76, 255, 0.6));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+  }
+  
+  .glow-text {
+    text-shadow: 0 0 20px rgba(255, 154, 60, 0.35);
   }
 }
 

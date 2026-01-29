@@ -1,3 +1,5 @@
+'use client';
+
 import { signOutAction } from '@/app/actions/auth';
 import { Button, type ButtonProps } from '@/components/ui/button';
 

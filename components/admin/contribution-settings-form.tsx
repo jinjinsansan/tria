@@ -13,7 +13,7 @@ const POINT_FIELDS = [
   { key: 'daily_login', label: 'デイリーログイン', description: '1日に1回のログインボーナス' },
   { key: 'article_read', label: '記事閲覧', description: '学習コンテンツを読んだ際のポイント' },
   { key: 'sns_share', label: 'SNSシェア', description: 'Xやnoteでの共有完了時のポイント' },
- ] as const;
+] as const;
 
 type ContributionFieldKey = (typeof POINT_FIELDS)[number]['key'];
 type ContributionSettings = Record<ContributionFieldKey, number>;

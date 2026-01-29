@@ -39,7 +39,7 @@ export default async function MainLayout({ children }: { children: ReactNode }) 
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-primary/30 opacity-40 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(255,154,60,0.18),_transparent_55%),_radial-gradient(circle_at_80%_20%,_rgba(95,76,255,0.25),_transparent_45%)] opacity-60 blur-3xl" />
       <SiteHeader user={headerUser} />
       <main className="flex-1">
         <div className="mx-auto w-full max-w-6xl px-4 py-10">{children}</div>

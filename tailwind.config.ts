@@ -12,30 +12,30 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#8B5CF6',
-          foreground: '#FFFFFF',
+          DEFAULT: '#FF9A3C',
+          foreground: '#0C0F17',
         },
         secondary: {
-          DEFAULT: '#06B6D4',
+          DEFAULT: '#5F4CFF',
           foreground: '#FFFFFF',
         },
         accent: {
-          DEFAULT: '#10B981',
-          foreground: '#FFFFFF',
+          DEFAULT: '#00F5FF',
+          foreground: '#00131D',
         },
-        background: '#0F0F0F',
-        foreground: '#FFFFFF',
+        background: '#03040A',
+        foreground: '#F5F6FE',
         card: {
-          DEFAULT: '#1A1A1A',
-          foreground: '#FFFFFF',
+          DEFAULT: '#10131A',
+          foreground: '#F5F6FE',
         },
         muted: {
-          DEFAULT: '#2A2A2A',
-          foreground: '#A1A1A1',
+          DEFAULT: '#1B1E29',
+          foreground: '#9CA3B5',
         },
-        border: '#2A2A2A',
-        input: '#2A2A2A',
-        ring: '#8B5CF6',
+        border: '#1F2330',
+        input: '#1C1F2C',
+        ring: '#FF9A3C',
       },
       borderRadius: {
         lg: '0.75rem',
@@ -44,7 +44,8 @@ const config: Config = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #10B981 100%)',
+        'gradient-primary': 'linear-gradient(120deg, #FFEA7B 0%, #FF9A3C 35%, #FF4B71 70%, #5F4CFF 100%)',
+        'gradient-surface': 'linear-gradient(145deg, rgba(255,154,60,0.08), rgba(95,76,255,0.08))',
       },
     },
   },

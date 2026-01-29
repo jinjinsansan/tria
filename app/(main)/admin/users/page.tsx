@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { buttonVariants } from '@/components/ui/button';
+import { toggleAdminAction, adjustContributionAction } from '@/app/actions/admin-users';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/server';
@@ -57,7 +58,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           {users?.length ? (
             users.map((member) => (
-              <div key={member.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div key={member.id} className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p className="text-white">{member.display_name ?? member.email}</p>
                 <p className="text-xs">{member.email}</p>
                 <div className="mt-2 flex flex-wrap gap-4 text-xs">
@@ -65,6 +66,33 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
                   <span>ダウンライン {member.total_downlines ?? 0}</span>
                   <span>{member.is_admin ? '管理者' : 'メンバー'}</span>
                   <span>登録日 {member.created_at?.slice(0, 10)}</span>
+                </div>
+
+                <div className="flex flex-wrap gap-3 text-xs">
+                  <form action={toggleAdminAction} className="flex items-center gap-2">
+                    <input type="hidden" name="user_id" value={member.id} />
+                    <input type="hidden" name="make_admin" value={member.is_admin ? 'false' : 'true'} />
+                    <button
+                      type="submit"
+                      className={buttonVariants({ variant: member.is_admin ? 'outline' : 'gradient', size: 'sm' })}
+                    >
+                      {member.is_admin ? '管理者解除' : '管理者にする'}
+                    </button>
+                  </form>
+
+                  <form action={adjustContributionAction} className="flex items-center gap-2">
+                    <input type="hidden" name="user_id" value={member.id} />
+                    <input
+                      type="number"
+                      name="points"
+                      placeholder="±pt"
+                      className="h-9 w-24 rounded-md border border-border bg-card/70 px-2 text-sm"
+                      required
+                    />
+                    <button type="submit" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+                      貢献度調整
+                    </button>
+                  </form>
                 </div>
               </div>
             ))
